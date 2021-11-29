@@ -1,3 +1,4 @@
+import './style/Global.scss'
 import Header from "./components/Header";
 
 function App() {
