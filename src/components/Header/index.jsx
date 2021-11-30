@@ -11,7 +11,7 @@ const Header = () => {
       </div>
       <div className='nav__middle'>
         <form className='input__wrapper'>
-          <input type='text' />
+          <input type='text' placeholder="Busque aqui seu pokemon favorito" />
           <button>
             <BiSearchAlt size={19} />
           </button>

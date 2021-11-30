@@ -3,7 +3,7 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 60px;
+  height: 70px;
   background-color: #F22816;
   padding: 0 20px;
 }
@@ -28,12 +28,13 @@ nav {
   align-items: center;
   justify-content: center;
   padding: 8px;
-  border-radius: 25px;
+  border-radius: 8px;
   background-color: white;
 
   button{
     border: none;
     background-color: transparent;
+    cursor: pointer;
   }
 }
 
