@@ -1,31 +1,23 @@
 import React from 'react'
 import './style.scss'
 import Image from '../../assets/pokedex-logo.svg'
-import { BiSearchAlt } from 'react-icons/bi'
+
+import Searchbar from '../Search'
+
+
 
 const Header = () => {
+
+
   return (
     <nav>
       <div className='nav__left'>
         <img src={Image} alt="" />
       </div>
       <div className='nav__middle'>
-        <form className='input__wrapper'>
-          <input type='text' placeholder="Busque aqui seu pokemon favorito" />
-          <button>
-            <BiSearchAlt size={19} />
-          </button>
-        </form>
+        <Searchbar/>
       </div>
       <div className='nav__right'>
-        <div className='cart__icon'>
-
-          {/* {cartItems.length > 0 && (
-            <div className='item__count'>
-              <span>{cartItems.length}</span>
-            </div>
-          )} */}
-        </div>
       </div>
     </nav>
   )

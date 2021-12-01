@@ -1,60 +1,92 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef,useCallback } from "react";
 import api from '../../services/api'
 import './style.scss'
 import '../../style/Colors.scss'
-import {MdFavoriteBorder} from 'react-icons/md'
+import Pokemon from "../Pokemon";
+import Loading from "../Loading";
+import axios from "axios";
 
 
 const List = () => {
   const [pokemon, setPokemon] = useState([]);
   const [loading, setLoading] = useState(true)
-  const countPokemons = 150
+  const [nextUrl, setNextUrl] = useState(null);
+  
+  
+  const observer = useRef()
+  const lastElementRef = useCallback((node)=>{
+    if(loading) return
+    if(observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries =>{
+      if(entries[0].isIntersecting && nextUrl){
+        searchPokedex(nextUrl)
+      }
+    })
+    if(node)observer.current.observe(node)
 
-  const loadPokemons = async () => {
-    let pokemonArr = []
-    for (let i = 1; i <= countPokemons; i++) {
-      pokemonArr.push(await pokemonsData(i))
-    }
-    console.log(pokemonArr)
-    setPokemon(pokemonArr)
+  },[loading,nextUrl,pokemon]) 
+
+
+  const fetchPokemonDetail = async url  =>{
+    const response = await axios.get(url)
+    const {id,name,types,sprites,abilities,moves} = response.data
+    console.log(response.data)
+    return {
+      id,
+      name,
+      type: types[0].type.name,
+      img:sprites.other["official-artwork"].front_default,
+      abilities,
+      moves}
+
+  }
+ 
+
+
+const searchPokedex =useCallback( async url =>{
+  setLoading(true)
+  try{
+    const response = await axios.get(url)
+    const results = response.data.results
+    const {next} = response.data
+    if(next) setNextUrl(next)
+    const detailRequests = results.map(async res => await
+    fetchPokemonDetail(res.url))
+    
+      await Promise.all(detailRequests).then(detailResult =>{
+          setPokemon([...pokemon,...detailResult])
+      })
+
+
+  }catch(e){
+    console.error(e)
+  }finally{
     setLoading(false)
   }
+},[nextUrl,pokemon])
 
-  const pokemonsData = async (id) => {
-    const response = await api.get(`/${id}`)
-    return response
-  }
 
-  useEffect(() => {
-    loadPokemons()
-  }, [])
+useEffect(()=>{
+  const url = 'https://pokeapi.co/api/v2/pokemon/'
+  
+  searchPokedex(url)
+},[])
 
+
+const renderPokemon = () => pokemon.map((item,index)=>{
+
+  return index === pokemon.length -1
+  ? <div key={item.id} ref={lastElementRef} >
+    <Pokemon item={item} />
+  </div>
+  : <div key={item.id}><Pokemon item={item} /></div>
+})
 
   return (
     <>
-      {loading ? (
-        <h2>Carregando...</h2>
-      ) : (
-        <div className='container_pokemon'>
-          {pokemon.map(item => (
-            <div key={item.data.name}  className={`${item.data.types[0].type.name} wrapper_pokemon`} >
-              <div className="wrapper-top">
-              <span>{item.data.types[0].type.name}</span>
-              <MdFavoriteBorder size={24} />
-              </div>
-              <div className="wrapper-image">
-              <img src={item.data.sprites.other["official-artwork"].front_default} alt="image pokemon" />
-              </div>
-              <div className="wrapper-text">
-              <h3>{item.data.name}</h3>
-              <p>{item.data.weight}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )
-      }
-    </>
+        <div className='container_pokemon'>{renderPokemon()}</div>
+        {loading && <Loading/>}
+        </>
   )
 }
 
