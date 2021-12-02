@@ -18,6 +18,7 @@ const Header = () => {
         <Searchbar/>
       </div>
       <div className='nav__right'>
+        <span>Favoritos</span>
       </div>
     </nav>
   )

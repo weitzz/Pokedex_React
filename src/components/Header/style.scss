@@ -2,22 +2,25 @@ nav {
   color: white;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
   height: 70px;
   background-color: #F22816;
   padding: 0 20px;
-}
 
-.nav__left {
-  flex: 1;
+}
 
   img{
-    width: 120px;
+    width: 150px;
     height: 50px;
   }
-}
 
+  .nav__middle{
+    width: 400px;
+  }
 
-.nav__right {
-  flex: 1;
-}
+  @media(max-width:720px){
+    nav{
+      height: 150px;
+    }
+  }

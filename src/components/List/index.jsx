@@ -30,7 +30,6 @@ const List = () => {
   const fetchPokemonDetail = async url  =>{
     const response = await axios.get(url)
     const {id,name,types,sprites,abilities,moves} = response.data
-    console.log(response.data)
     return {
       id,
       name,
