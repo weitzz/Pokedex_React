@@ -21,7 +21,9 @@ justify-content: space-around;
 width: 100%;
 text-transform: capitalize;
  margin-top: 8px;
-
+ .show{
+  display: block !important;
+}
 svg{
   color:#3d3d3d;
   transition: all 0.2s ease-in-out;
@@ -53,6 +55,12 @@ transition: all 0.2s ease-in-out;
 cursor: pointer;
 
 } 
+.button {
+  border: 1px solid #000;
+  outline: none;
+  background: #c7c7c7;
+  cursor: pointer;
+}
 .wrapper-image{
 width: 100%;
 height: auto;

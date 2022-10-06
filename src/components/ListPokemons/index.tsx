@@ -5,16 +5,39 @@ import '../../style/Colors.scss'
 import Pokemon from "../Pokemon";
 import Loading from "../Loading";
 import axios from "axios";
+import ModalPokemon from "../ModalInfos";
+
+export interface PokemonsTypes {
+  id: number,
+  name: string,
+  type: [],
+  img: string,
+  abilities: string,
+  moves: string
+}
 
 
 const List = () => {
-  const [pokemon, setPokemon] = useState([]);
+  const [pokemon, setPokemon] = useState<string[]>([]);
   const [loading, setLoading] = useState(true)
   const [nextUrl, setNextUrl] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleShow = () =>{
+    setIsOpen(true)
+    console.log('abriu')
+  }
+  
+  const handleClose = () =>{
+    setIsOpen(false)
+    console.log('fechou')
+  }
+   
   
   
-  const observer = useRef()
-  const lastElementRef = useCallback((node)=>{
+  
+  const observer = useRef<IntersectionObserver | null>(null)
+  const lastElementRef = useCallback((node: any)=>{
     if(loading) return
     if(observer.current) observer.current.disconnect()
     observer.current = new IntersectionObserver(entries =>{
@@ -27,7 +50,7 @@ const List = () => {
   },[loading,nextUrl,pokemon]) 
 
 
-  const fetchPokemonDetail = async url  =>{
+  const fetchPokemonDetail = async (url: any)  =>{
     const response = await axios.get(url)
     const {id,name,types,sprites,abilities,moves} = response.data
     return {
@@ -42,14 +65,14 @@ const List = () => {
  
 
 
-const searchPokedex =useCallback( async url =>{
+const searchPokedex =useCallback( async (url: any) =>{
   setLoading(true)
   try{
     const response = await axios.get(url)
     const results = response.data.results
     const {next} = response.data
     if(next) setNextUrl(next)
-    const detailRequests = results.map(async res => await
+    const detailRequests = results.map(async (res:any) => await
     fetchPokemonDetail(res.url))
     
       await Promise.all(detailRequests).then(detailResult =>{
@@ -72,13 +95,13 @@ useEffect(()=>{
 },[])
 
 
-const renderPokemon = () => pokemon.map((item,index)=>{
+const renderPokemon = () => pokemon.map((item: any,index: any)=>{
 
   return index === pokemon.length -1
   ? <div key={item.id} ref={lastElementRef} >
-    <Pokemon item={item} />
+    <Pokemon item={item} onClick={handleShow}/>
   </div>
-  : <div key={item.id}><Pokemon item={item} /></div>
+  : <div key={item.id}><Pokemon item={item} onClick={handleShow}/></div>
 })
 
   return (
